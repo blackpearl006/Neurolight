@@ -1,0 +1,7 @@
+numpy
+seaborn
+nibabel
+matplotlib
+torchinfo
+logging
+skimage

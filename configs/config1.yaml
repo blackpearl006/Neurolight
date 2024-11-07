@@ -1,0 +1,23 @@
+np_seed: 6
+torch_seed: 6
+fold_seed: 98
+batch_size: 8
+total_epochs: 200
+dataset_dir: '/data/ninad/fieldmaps/HCP_T1w'
+result_dir: '/home/neelamlab/ninad/DWI/results'
+mae_dir: '/home/neelamlab/ninad/DWI'
+label_dir: '/data/ninad/fieldmaps/HCPCN2mm.csv'
+age_threshold: 0
+task: 'classification'
+model: 'SFCN'
+dropoutrate: 0.5
+early_stopping_patience: 15
+kfolds: 5
+save_every: 25
+lr: 0.0001
+weight_decay: 0.001
+optimizer: 'Adam'
+loss: 'MSE'
+test_ratio: 0.2
+stratify: True
+note: 'The training is done on only caucassian subjects with no Age Threshold but ABIDE is added'
