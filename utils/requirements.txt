@@ -1,7 +1,8 @@
 numpy
+pandas
 seaborn
 nibabel
 matplotlib
 torchinfo
 logging
-skimage
+scikit-learn
