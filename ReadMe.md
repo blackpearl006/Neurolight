@@ -9,7 +9,7 @@ The project consists of the following key components:
 ### 1. **sex_classification.ipynb** 
    - This notebook is a standalone script that follows a tutorial on sex classification.
    - It walks through the basic steps of building a neural network model for sex classification using PyTorch.
-   - You can find an explanation of this notebook in detail in the [Medium Article](insert_link_here).
+   - You can find an explanation of this notebook in detail in the [Medium Article](https://medium.com/@daminininad/intro-to-ai-with-neuroimaging-data-a-end-to-end-tutorial-using-pytorch-f941c6ef547a).
    - This notebook provides an introduction to the model, dataset, and the general structure of the classification task.
 
 ### 2. **crossvalidation_sexclassification.py** 
