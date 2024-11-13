@@ -2,8 +2,8 @@ import os
 import nibabel as nib
 import pandas as pd
 import torch
-
 from torch.utils.data import Dataset
+
 class Fieldmapdata(Dataset):
     def __init__(self, root_dir, label_dir, task='classification'):
         self.labels_df = self.load_labels(label_dir)
@@ -11,6 +11,12 @@ class Fieldmapdata(Dataset):
 
     def __len__(self):
         return len(self.samples)
+    
+    def __getposweight__(self):
+        sexs = []
+        for path, sex in self.samples:
+            sexs.append(sex)
+        return sum(sexs)/(len(sexs)-sum(sexs))
 
     def __getitem__(self, idx):
         img_path, label, dataset, id_ = self.samples[idx]

@@ -28,7 +28,12 @@ def iniatlise_model_loss_optimiser(config):
     if config['model'] == 'SFCN': model = SFCN()
     if config['model'] == 'Resnet': 
         model = generate_model_resnet(model_depth=config['others']['resnetdepth'])
-    if config['loss'] == 'MSE': criterion = nn.MSELoss()
+    if config['loss'] == 'WeightedBCEWithLogitsLoss': 
+        criterion = nn.BCEWithLogitsLoss(pos_weight=config['pos_weight'])
+    elif config['loss'] == 'BCEWithLogitsLoss': 
+        criterion = nn.BCEWithLogitsLoss()
+    elif config['loss'] == 'BCELoss': 
+        criterion = nn.BCELoss()
     if config['optimizer'] == 'Adam': 
         optimizer = torch.optim.Adam(model.parameters(), lr=config['lr'])
     elif config['optimizer'] == 'SGD':
@@ -44,7 +49,7 @@ def KFoldtrain(train_dataset, test_dl, x_dl= None, LOGGER=None, config=None):
     for fold, (train_idx, val_idx) in enumerate(kf.split(train_dataset)):
         RESULT_DIR = f'{config['result_dir']}/{config['model']}_seed_{config['np_seed']}/fold_{fold}'
         os.makedirs(RESULT_DIR,exist_ok=True)   
-        
+        print('pso weight: ', train_dataset.__getposweight__())
         train_ds = Subset(train_dataset, train_idx)
         val_ds = Subset(train_dataset, val_idx)        
         train_dl = prepare_dataloader(train_ds, batch_size=config['batch_size'])
@@ -116,5 +121,6 @@ if __name__ == "__main__":
     config['torch_seed'] = args.torch_seed if args.torch_seed is not None else config.get('torch_seed', 32)
     config['batch_size'] = args.batch_size if args.batch_size is not None else config.get('batch_size', 16)
     config['lr'] = args.lr if args.lr is not None else config.get('lr', 0.0001)
+    config['pos_weight'] = config.get('pos_weight', 1.255)
 
     main(config)

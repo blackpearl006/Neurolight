@@ -3,7 +3,7 @@ torch_seed: 6
 fold_seed: 98
 batch_size: 8
 total_epochs: 500
-dataset_dir: '/data/ninad/fieldmaps/HCP_T1w'
+dataset_dir: '/data/ninad/fieldmaps/AD'
 result_dir: '/home/neelamlab/ninad/DWI/results'
 mae_dir: '/home/neelamlab/ninad/DWI'
 label_dir: '/data/ninad/fieldmaps/HCPCN2mm.csv'
