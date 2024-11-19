@@ -3,13 +3,13 @@ torch_seed: 6
 fold_seed: 98
 batch_size: 8
 total_epochs: 500
-dataset_dir: '/data/ninad/fieldmaps/HCP_T1w'
+dataset_dir: '/data/ninad/fieldmaps/'
 result_dir: '/home/neelamlab/ninad/DWI/results'
 mae_dir: '/home/neelamlab/ninad/DWI'
 label_dir: '/data/ninad/fieldmaps/HCPCN2mm.csv'
 age_threshold: 0
 task: 'classification'
-model: 'SFCN'
+model: 'SFCN2'
 dropoutrate: 0.5
 early_stopping_patience: 15
 kfolds: 5
@@ -20,4 +20,4 @@ optimizer: 'Adam'
 loss: 'BCEWithLogitsLoss'
 test_ratio: 0.2
 stratify: True
-note: 'The training is done on only caucassian subjects with no Age Threshold but ABIDE is added AD,RD,ADC,FA'
+note: 'Training with all the 4 channels as input: in the order: '
