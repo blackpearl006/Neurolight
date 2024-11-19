@@ -49,7 +49,6 @@ def KFoldtrain(train_dataset, test_dl, x_dl= None, LOGGER=None, config=None):
     for fold, (train_idx, val_idx) in enumerate(kf.split(train_dataset)):
         RESULT_DIR = f'{config['result_dir']}/{config['model']}_seed_{config['np_seed']}/fold_{fold}'
         os.makedirs(RESULT_DIR,exist_ok=True)   
-        print('pso weight: ', train_dataset.__getposweight__())
         train_ds = Subset(train_dataset, train_idx)
         val_ds = Subset(train_dataset, val_idx)        
         train_dl = prepare_dataloader(train_ds, batch_size=config['batch_size'])
