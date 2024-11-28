@@ -1,5 +1,5 @@
-# Sex Classification Project
-
+# Neurolight
+## Sample code for : Sex Classification Project
 This repository contains code for sex classification using deep learning models implemented with PyTorch. It includes various scripts that demonstrate the entire process, from basic implementation to advanced features like cross-validation and distributed training.
 
 ## Project Structure
