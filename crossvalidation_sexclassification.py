@@ -1,6 +1,6 @@
 from data.dataset import *
 from data.dataloder import *
-from models.resnet import *
+from models.sfcn import SFCN
 
 import os
 import logging
@@ -67,7 +67,7 @@ test_dl = DataLoader(test_ds, batch_size=TEST_BATCH_SIZE, shuffle=False)
 
 LOGGER.info('Data split completed !!')
 
-model = generate_model_resnet(50,n_classes=1, n_input_channels=1)
+model = SFCN() #generate_model_resnet(50,n_classes=1, n_input_channels=1)
 LOGGER.info(model)
 
 kf = KFold(n_splits=K_FOLDS, shuffle=True, random_state=NP_SEED)
@@ -85,10 +85,10 @@ for fold, (train_idx, val_idx) in enumerate(kf.split(train_dataset)):
     train_dl = DataLoader(train_ds, batch_size=BATCH_SIZE, shuffle=True)
     val_dl = DataLoader(val_ds, batch_size=BATCH_SIZE, shuffle=False)
 
-    model = generate_model_resnet(50, n_classes=1, n_input_channels=1).to(DEVICE)
+    model = SFCN() #generate_model_resnet(50, n_classes=1, n_input_channels=1).to(DEVICE)
     model = nn.DataParallel(model)
     optimizer = torch.optim.Adam(model.parameters(), lr=LEARNING_RATE)
-    best_model = generate_model_resnet(50,n_classes=1, n_input_channels=1)
+    best_model = SFCN() #generate_model_resnet(50,n_classes=1, n_input_channels=1)
     
     # criterion2 = nn.BCEWithLogitsLoss(pos_weight=torch.tensor(1.28,dtype=torch.float32)) # Total subjects: 899 Number of males : 395, number of females: 504, pos_weight = 1.2759493670886075
     criterion2 = nn.BCEWithLogitsLoss()
@@ -105,10 +105,10 @@ for fold, (train_idx, val_idx) in enumerate(kf.split(train_dataset)):
 
         for inputs, labels in train_dl:
             inputs = inputs.to(DEVICE)
-            mean = inputs.mean()
-            std = inputs.std()
-            inputs = (inputs - mean) / (std + 1e-8)
-            labels = labels.to(DEVICE).unsqueeze(1)
+            # mean = inputs.mean()
+            # std = inputs.std()
+            # inputs = (inputs - mean) / (std + 1e-8)
+            labels = labels.to(DEVICE)
             optimizer.zero_grad()
             outputs = model(inputs)
             tloss = criterion2(outputs, labels)
@@ -132,10 +132,10 @@ for fold, (train_idx, val_idx) in enumerate(kf.split(train_dataset)):
         with torch.no_grad():
             for inputs, labels in val_dl:
                 inputs = inputs.to(DEVICE)
-                mean = inputs.mean()
-                std = inputs.std()
-                inputs = (inputs - mean) / (std + 1e-8)
-                labels = labels.to(DEVICE).unsqueeze(1)
+                # mean = inputs.mean()
+                # std = inputs.std()
+                # inputs = (inputs - mean) / (std + 1e-8)
+                labels = labels.to(DEVICE)
                 outputs = model(inputs)
                 vloss = criterion2(outputs, labels)
                 val_loss += vloss.item() / inputs.size(0)
@@ -174,7 +174,6 @@ for fold, (train_idx, val_idx) in enumerate(kf.split(train_dataset)):
                 LOGGER.info(f"Early stopping triggered for fold {fold+1} at epoch {epoch+1}")
                 break
 
-# Aggregate the results across all folds
 avg_train_loss = np.mean(fold_train_losses)
 avg_val_loss = np.mean(fold_val_losses)
 avg_train_accuracy = np.mean(fold_train_accuracies)
@@ -195,9 +194,9 @@ with torch.no_grad():
     all_labels = []
     for inputs, labels in test_dl:
         inputs = inputs.to(DEVICE)
-        mean = inputs.mean()
-        std = inputs.std()
-        inputs = (inputs - mean) / (std + 1e-8)
+        # mean = inputs.mean()
+        # std = inputs.std()
+        # inputs = (inputs - mean) / (std + 1e-8)
         labels = labels.to(DEVICE).unsqueeze(1)
 
         outputs = best_model(inputs)
@@ -227,19 +226,4 @@ sns.heatmap(cm, annot=True, fmt="d", cmap="Blues")
 plt.title('Confusion Matrix')
 plt.xlabel('Predicted')
 plt.ylabel('True')
-plt.savefig('resnet50_finetuned_confusion_matrix_sept10.png')
-
-# best_model.to(DEVICE)
-# with torch.no_grad():
-#     for num, ((inputs, masked, mask), labels) in enumerate(test_dl):
-#         inputs = inputs.to(DEVICE)
-#         labels = labels.to(DEVICE)
-#         try:
-#             ig = getInputAttributions(best_model, inputs, labels)
-#             ig = ig.sequeeze(0) #to remove batch size 
-#             ig_nifti = nib.Nifti1Image(ig, affine=None)
-#             nib.save(ig_nifti, f"{MAE_DIR}/IG/test_subj_{num}.nii.gz")
-#         except:
-#             ig = getInputAttributions(best_model, inputs, labels)
-#             ig = ig.cpu().numpy()
-#             np.savez_compressed(f"{MAE_DIR}/IG/test_subj_{num}",val = ig)
+plt.savefig('confusion_matrix.png')
